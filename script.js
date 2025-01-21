@@ -135,3 +135,32 @@ reload_btn.addEventListener('click', function() {
 });
 
 
+// Function to trigger search
+function triggerSearch() {
+  let query = inputVal.value.trim();
+
+  if (query) {
+    page = 1; // Reset page number for new search
+    searchResults.innerHTML = ''; // Clear previous results
+    searchImages(query, page).then(images => {
+      if (images && images.length > 0) {
+        displayImages(images);
+      } else {
+        searchResults.innerHTML = '<p>No results found.</p>';
+      }
+    });
+  } else {
+    searchResults.innerHTML = '<p>Please enter a search query.</p>';
+  }
+}
+
+// Event listener for search button click
+searchBtn.addEventListener("click", triggerSearch);
+
+// Event listener for "Enter" key press
+inputVal.addEventListener("keydown", function(event) {
+  if (event.key === "Enter") { // Or you can use event.keyCode === 13 for older browsers
+    event.preventDefault(); // Prevents the default action, which could be submitting a form
+    triggerSearch(); // Trigger the search
+  }
+});
