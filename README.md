@@ -3,7 +3,6 @@
 > A sleek, high-performance image discovery and photography platform powered by the Unsplash API.
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-Visual_Fetch-10b981?style=for-the-badge&logo=netlify)](https://visualfetch.netlify.app/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-06b6d4?style=for-the-badge)](LICENSE)
 
 ---
 
@@ -95,9 +94,3 @@ Crafted with ❤️ by **Shubham Dixit**
 - 🌐 **Portfolio**: [https://shubhamdixit.netlify.app/](https://shubhamdixit.netlify.app/)
 - 🐙 **GitHub**: [@shubhamdixit2555](https://github.com/shubhamdixit2555)
 
----
-
-## 📄 License
-
-This project is open-source and available under the [MIT License](LICENSE).
-Images provided via the [Unsplash API](https://unsplash.com/license).

@@ -124,10 +124,13 @@ function init() {
    Event Listeners
    ========================================================================== */
 function setupEventListeners() {
-  // Brand Logo Click -> Reset to home
+  // Brand Logo Click -> Smoothly scroll to top and reset to home
   brandLogo.addEventListener("click", () => {
-    resetFilters();
-    fetchPhotos(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (state.query || state.category || state.orientation || state.page > 1) {
+      resetFilters();
+      fetchPhotos(true);
+    }
   });
 
   // Search Form Submit
