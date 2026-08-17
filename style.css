@@ -60,6 +60,36 @@ html {
   color-scheme: dark;
 }
 
+/* Custom Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) #080b11;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #080b11;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 9999px;
+  border: 2px solid #080b11;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #10b981;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #06b6d4;
+}
+
 body {
   background-color: var(--bg-main);
   color: var(--text-primary);

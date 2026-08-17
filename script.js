@@ -170,6 +170,17 @@ function setupEventListeners() {
     }
   });
 
+  // Mobile / Browser Hardware Back Button Handling
+  window.addEventListener("popstate", () => {
+    if (confirmDialog.classList.contains("active")) {
+      closeConfirmDialog(true);
+    } else if (lightboxModal.classList.contains("active")) {
+      closeLightbox(true);
+    } else if (favoritesDrawer.classList.contains("active")) {
+      closeFavoritesDrawer(true);
+    }
+  });
+
   // Category Chips
   categoryChips.addEventListener("click", (e) => {
     const chip = e.target.closest(".chip-item");
@@ -816,16 +827,30 @@ function openLightbox(index) {
   modalPrevBtn.style.display = index > 0 ? "flex" : "none";
   modalNextBtn.style.display = index < state.photos.length - 1 ? "flex" : "none";
 
+  // Push history state if opening fresh
+  if (!lightboxModal.classList.contains("active")) {
+    try {
+      history.pushState({ modal: "lightbox" }, "");
+    } catch (e) {}
+  }
+
   lightboxModal.classList.add("active");
   lightboxModal.setAttribute("aria-hidden", "false");
   document.body.style.overflow = "hidden";
 }
 
-function closeLightbox() {
+function closeLightbox(isFromPopState = false) {
+  if (!lightboxModal.classList.contains("active")) return;
   lightboxModal.classList.remove("active");
   lightboxModal.setAttribute("aria-hidden", "true");
   downloadMenu.classList.remove("active");
   document.body.style.overflow = "";
+
+  if (!isFromPopState && history.state && history.state.modal === "lightbox") {
+    try {
+      history.back();
+    } catch (e) {}
+  }
 }
 
 function navigateLightbox(direction) {
@@ -958,17 +983,29 @@ function updateCardFavoriteButtons() {
 
 function openFavoritesDrawer() {
   renderFavorites();
+  if (!favoritesDrawer.classList.contains("active")) {
+    try {
+      history.pushState({ modal: "favorites" }, "");
+    } catch (e) {}
+  }
   favoritesDrawer.classList.add("active");
   favoritesDrawerBackdrop.classList.add("active");
   favoritesDrawer.setAttribute("aria-hidden", "false");
   document.body.style.overflow = "hidden";
 }
 
-function closeFavoritesDrawer() {
+function closeFavoritesDrawer(isFromPopState = false) {
+  if (!favoritesDrawer.classList.contains("active")) return;
   favoritesDrawer.classList.remove("active");
   favoritesDrawerBackdrop.classList.remove("active");
   favoritesDrawer.setAttribute("aria-hidden", "true");
   document.body.style.overflow = "";
+
+  if (!isFromPopState && history.state && history.state.modal === "favorites") {
+    try {
+      history.back();
+    } catch (e) {}
+  }
 }
 
 function renderFavorites() {
@@ -1017,13 +1054,25 @@ function renderFavorites() {
    Custom Confirmation Dialog Modal
    ========================================================================== */
 function openConfirmDialog() {
+  if (!confirmDialog.classList.contains("active")) {
+    try {
+      history.pushState({ modal: "confirm" }, "");
+    } catch (e) {}
+  }
   confirmDialog.classList.add("active");
   confirmDialog.setAttribute("aria-hidden", "false");
 }
 
-function closeConfirmDialog() {
+function closeConfirmDialog(isFromPopState = false) {
+  if (!confirmDialog.classList.contains("active")) return;
   confirmDialog.classList.remove("active");
   confirmDialog.setAttribute("aria-hidden", "true");
+
+  if (!isFromPopState && history.state && history.state.modal === "confirm") {
+    try {
+      history.back();
+    } catch (e) {}
+  }
 }
 
 /* ==========================================================================
