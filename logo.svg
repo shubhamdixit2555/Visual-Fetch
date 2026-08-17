@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <!-- Vibrant Modern Gradients -->
+    <linearGradient id="lensGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f59b" />
+      <stop offset="100%" stop-color="#00d2ff" />
+    </linearGradient>
+
+    <linearGradient id="lensGrad2" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00d2ff" />
+      <stop offset="100%" stop-color="#3b82f6" />
+    </linearGradient>
+
+    <linearGradient id="accentGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f59b" />
+      <stop offset="100%" stop-color="#38bdf8" />
+    </linearGradient>
+
+    <!-- Deep Dark Contrast Background -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#050811" />
+    </linearGradient>
+  </defs>
+
+  <!-- Modern Dark Squircle Card -->
+  <rect x="12" y="12" width="176" height="176" rx="46" fill="url(#bgGrad)" stroke="rgba(255, 255, 255, 0.15)" stroke-width="2" />
+
+  <!-- Outer Camera / Viewfinder Frame -->
+  <rect x="36" y="44" width="128" height="112" rx="28" fill="none" stroke="url(#accentGlow)" stroke-width="7" />
+
+  <!-- Top Camera Flash / Sensor Dot -->
+  <circle cx="134" cy="62" r="5" fill="#00f59b" />
+
+  <!-- Inner Camera Lens Aperture Ring -->
+  <circle cx="100" cy="100" r="38" fill="none" stroke="rgba(255, 255, 255, 0.15)" stroke-width="4" />
+
+  <!-- Modern Geometric Shutter / Aperture Blades (Visual Iris) -->
+  <!-- Blade 1: Top-Left to Bottom -->
+  <path d="M 100 62 C 118 62 138 82 138 100" fill="none" stroke="url(#lensGrad1)" stroke-width="6" stroke-linecap="round" />
+  
+  <!-- Blade 2: Right to Bottom-Left -->
+  <path d="M 138 100 C 138 118 118 138 100 138" fill="none" stroke="url(#lensGrad1)" stroke-width="6" stroke-linecap="round" />
+  
+  <!-- Blade 3: Bottom to Top-Left -->
+  <path d="M 100 138 C 82 138 62 118 62 100" fill="none" stroke="url(#lensGrad2)" stroke-width="6" stroke-linecap="round" />
+  
+  <!-- Blade 4: Left to Top -->
+  <path d="M 62 100 C 62 82 82 62 100 62" fill="none" stroke="url(#lensGrad2)" stroke-width="6" stroke-linecap="round" />
+
+  <!-- Center Core Lens Spark / Optical Reflection -->
+  <circle cx="100" cy="100" r="14" fill="url(#lensGrad1)" />
+  <circle cx="95" cy="95" r="4" fill="#ffffff" opacity="0.85" />
+</svg>

@@ -1,104 +1,103 @@
-Here’s an README file for the GitHub project, incorporating the Unsplash API details and live demo link:
+# Visual Fetch 📸
+
+> A sleek, high-performance image discovery and photography platform powered by the Unsplash API.
+
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Visual_Fetch-10b981?style=for-the-badge&logo=netlify)](https://visualfetch.netlify.app/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-06b6d4?style=for-the-badge)](LICENSE)
 
 ---
 
-# Visual Fetch
+## 🌟 Preview
 
-## Project Overview
+![Visual Fetch Screenshot](screenshot.png)
 
-**Visual Fetch** is an image-searching web application that uses the [Unsplash API](https://unsplash.com/developers) to fetch and display high-quality images. Users can search for a variety of images based on keywords, and the results are presented in a clean, responsive interface. This project demonstrates how to work with third-party APIs and build a dynamic front-end interface.
+---
 
-## Live Demo
+## ⚡ Overview
 
-Check out the live demo here: [Visual Fetch Live](https://visualfetch.netlify.app/)
+**Visual Fetch** is a modern, responsive web application that connects with the Unsplash API to explore, discover, and download millions of free, high-resolution photographs. Built with clean vanilla JavaScript, modern CSS flexbox masonry, and a dark glassmorphic design system.
 
-> **Note**: API calls are limited by the Unsplash free tier, so results may be subject to rate limits.
+🔗 **Live Demo:** [https://visualfetch.netlify.app/](https://visualfetch.netlify.app/)
 
-## Features
+---
 
-- Search for images by keywords using the Unsplash API
-- Responsive grid layout to display fetched images
-- Clickable images that open full-resolution versions in a new tab
-- Smooth and intuitive user interface
-- Infinite scrolling for a seamless browsing experience
+## ✨ Features
 
-## Technologies Used
+- 🔍 **Instant Search & Autocomplete**: Search millions of high-resolution images by keyword or topic.
+- 🧱 **Stable Multi-Column Masonry Grid**: Dynamic responsive gallery that preserves photo aspect ratios with zero layout shifts on pagination.
+- 🪟 **HD Lightbox Modal**: Fullscreen image preview with author credits, stats, dimensions, and tags.
+- ⬇️ **Multi-Resolution Downloads**: Download photos directly in **Small (640px)**, **Regular (1080px)**, or **Full HD / Original**.
+- ❤️ **Saved Favorites Collection**: Bookmark favorite visuals with `localStorage` persistence and a slide-out drawer manager.
+- 🧭 **Orientation & Sort Filters**: Filter by **Landscape**, **Portrait**, or **Squarish**, and sort by **Popular/Relevant** or **Latest**.
+- 🏷️ **Quick Discovery Tags**: One-click curated category chips (*Trending, Nature, Architecture, Wallpapers, Minimalist, Cyberpunk, 3D, Travel*).
+- 🔀 **Random Inspiration Shuffle**: Spontaneous discovery mode for finding fresh photographic inspirations.
+- 📱 **Fully Responsive**: Seamless layout across mobile, tablet, laptop, and ultra-wide screens.
 
-- **HTML5**: For structuring the web pages.
-- **CSS3**: For responsive layout and visual design.
-- **JavaScript (ES6)**: To handle API calls and dynamic rendering of search results.
-- **Unsplash API**: To fetch and display images from Unsplash.
-- **Netlify**: For deployment of the live demo.
+---
 
-## Installation and Setup
+## 🛠️ Tech Stack
 
-To run this project locally, follow these steps:
+- **Frontend Structure**: HTML5 (Semantic & Accessible)
+- **Styling & Theme**: Vanilla CSS3 (Custom Properties, Glassmorphism, Responsive Flex Masonry)
+- **Application Logic**: Vanilla JavaScript (ES6+, Fetch API, LocalStorage, Async/Await)
+- **API Provider**: [Unsplash API](https://unsplash.com/developers)
+- **Hosting & Deployment**: [Netlify](https://www.netlify.com/)
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+No complex dependencies or build tools needed. A modern web browser is all you need.
+
+### Quick Setup
 
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/shubhamdixit2555/Visual-Fetch.git
-   ```
-
-2. **Navigate to the project directory**:
-   ```bash
    cd Visual-Fetch
    ```
 
-3. **Install dependencies** (if applicable):
-   ```bash
-   npm install
-   ```
+2. **Run locally**:
+   - Simply open `index.html` in your browser:
+     ```bash
+     # On Windows
+     start index.html
 
-4. **Get an Unsplash API key** by signing up at [Unsplash Developer](https://unsplash.com/developers).
+     # On macOS
+     open index.html
 
-5. **Create a `.env` file** in the project root and add your API key:
-   ```bash
-   REACT_APP_UNSPLASH_ACCESS_KEY=your_access_key_here
-   ```
+     # On Linux
+     xdg-open index.html
+     ```
+   - Or use VS Code **Live Server** extension to launch with local hot-reloading.
 
-6. **Run the app** (if using a local server like React):
-   ```bash
-   npm start
-   ```
+---
 
-7. **Open `index.html`** in your browser (for static projects).
+## 📁 Project Structure
 
-## How It Works
-
-1. The user enters a search term.
-2. The app sends a request to the **Unsplash API** with the search term.
-3. The Unsplash API responds with a set of images.
-4. The images are displayed in a responsive grid layout.
-5. Infinite scrolling loads more images as the user scrolls down the page.
-
-## API Reference
-
-This project uses the Unsplash API. Here’s an example of a simple API request to fetch images based on a keyword:
-
-```javascript
-const query = 'nature';
-fetch(`https://api.unsplash.com/search/photos?query=${query}&client_id=YOUR_ACCESS_KEY`)
-  .then(response => response.json())
-  .then(data => console.log(data));
+```text
+Visual-Fetch/
+├── index.html       # Main HTML5 application structure
+├── style.css        # Modern design system & responsive masonry styles
+├── script.js        # API integration, lightbox, masonry & state logic
+├── logo.svg         # Clean geometric camera & viewfinder vector logo
+├── screenshot.png   # Application preview screenshot
+└── README.md        # Project documentation
 ```
 
-For more details, visit the [Unsplash API Documentation](https://unsplash.com/documentation).
+---
 
-## Contribution
+## 👨‍💻 Creator
 
-Contributions to this project are welcome! To contribute:
+Crafted with ❤️ by **Shubham Dixit**
 
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/your-feature`).
-3. Commit your changes (`git commit -m 'Add new feature'`).
-4. Push the branch (`git push origin feature/your-feature`).
-5. Open a pull request.
-under the MIT License. See the [LICENSE](LICENSE) file for more information.
+- 🌐 **Portfolio**: [https://shubhamdixit.netlify.app/](https://shubhamdixit.netlify.app/)
+- 🐙 **GitHub**: [@shubhamdixit2555](https://github.com/shubhamdixit2555)
 
 ---
 
-> **Disclaimer**: This project is built for educational purposes and uses the Unsplash API for fetching images. All images displayed are sourced from Unsplash, and their usage is subject to Unsplash's API and image licensing policies.
+## 📄 License
 
----
-
-Feel free to edit the sections further based on how your app is structured and deployed!
+This project is open-source and available under the [MIT License](LICENSE).
+Images provided via the [Unsplash API](https://unsplash.com/license).

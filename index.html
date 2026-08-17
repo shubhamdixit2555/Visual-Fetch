@@ -4,55 +4,415 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visual Fetch | The Image Library</title>
-    <meta name="keywords" content="shubhamdixit, imagesearchwebsite, unsplashbuddy, image search, high-quality images, visual fetch">
-    <meta name="author" content="shubhamdixit">
+    
+    <!-- SEO & Social Meta Tags -->
+    <meta name="description" content="Visual Fetch is a modern, high-resolution image discovery platform and photo library powered by the Unsplash API. Explore millions of free HD photos.">
+    <meta name="keywords" content="Visual Fetch, Image Library, Unsplash Search, HD Wallpapers, Free Stock Photos, Photography, Shubham Dixit">
+    <meta name="author" content="Shubham Dixit">
+    
     <meta property="og:title" content="Visual Fetch | The Image Library">
-    <meta property="og:description" content="A powerful image search website created by shubhamdixit, providing high-quality images from Unsplash.">
-    <meta property="og:image" content="logo.png">
+    <meta property="og:description" content="Discover, explore, and download high-resolution photos curated for creators and developers.">
+    <meta property="og:image" content="logo.svg">
     <meta property="og:url" content="https://visualfetch.netlify.app">
+    <meta property="og:type" content="website">
 
-    <link rel="stylesheet" href="style.css">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="icon" href="logo-modified.png" type="Image/png" >
+
+    <!-- Favicon -->
+    <link rel="icon" href="logo.svg" type="image/svg+xml">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1 class="heading"> <img src="logo.png" alt="">Visual Fetch - <br> The Image Library</h1>
-        <div class="fn">
-            <div class="input">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Search for Image" class="search-input">
-                    <i class="fa-solid fa-xmark pointer clear"></i>
+    <!-- Background Glows -->
+    <div class="ambient-glow glow-top-left"></div>
+    <div class="ambient-glow glow-top-right"></div>
+
+    <!-- Navigation Header -->
+    <header class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="brand" id="brandLogo" role="button" tabindex="0" title="Visual Fetch Home">
+                <img src="logo.svg" alt="Visual Fetch Logo" class="brand-logo">
+                <span class="brand-name">Visual Fetch</span>
             </div>
-            <button id="search-button" class="btn">Search</button>
+
+            <div class="nav-actions">
+                <a href="https://shubhamdixit.netlify.app/" target="_blank" rel="noopener noreferrer" class="nav-btn nav-btn-portfolio" title="Visit Shubham's Portfolio">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    <span class="nav-btn-text">Portfolio</span>
+                </a>
+                <button class="nav-btn" id="navRandomBtn" title="Discover Random Inspiration">
+                    <i class="fa-solid fa-shuffle"></i>
+                    <span class="nav-btn-text">Shuffle</span>
+                </button>
+                <button class="nav-btn nav-btn-primary" id="openFavoritesBtn" title="Saved Collection">
+                    <i class="fa-solid fa-heart"></i>
+                    <span class="nav-btn-text">Favorites</span>
+                    <span class="badge-count" id="favoritesCount">0</span>
+                </button>
+            </div>
         </div>
     </header>
-    <main class="main center">
-        <div class="search-results">
-            <div class="search-result">
-                <img src="https://images.unsplash.com/photo-1543599538-a6c4f6cc5c05?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Welcome">
+
+    <main class="main-content">
+        <!-- Minimal Hero Search Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Discover <span class="gradient-text">Stunning Visuals</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Search millions of free, high-resolution photographs.
+                </p>
+
+                <!-- Search Form Box -->
+                <form class="search-form" id="searchForm" autocomplete="off">
+                    <div class="search-input-wrapper">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            class="search-input" 
+                            placeholder="Search photos, topics, wallpapers..." 
+                            aria-label="Search high-resolution images"
+                            autofocus
+                        >
+                        <button type="button" class="btn-clear" id="clearBtn" title="Clear input" aria-label="Clear input">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                    <button type="submit" class="btn-search" id="searchSubmitBtn">
+                        <span>Search</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <!-- Clean Quick Tags -->
+                <div class="category-carousel-wrapper">
+                    <div class="category-carousel" id="categoryChips">
+                        <button class="chip-item active" data-category="">Trending</button>
+                        <button class="chip-item" data-category="Nature">Nature</button>
+                        <button class="chip-item" data-category="Architecture">Architecture</button>
+                        <button class="chip-item" data-category="Wallpapers">Wallpapers</button>
+                        <button class="chip-item" data-category="Minimalism">Minimalist</button>
+                        <button class="chip-item" data-category="Cyberpunk">Cyberpunk</button>
+                        <button class="chip-item" data-category="3D Renders">3D</button>
+                        <button class="chip-item" data-category="Travel">Travel</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Discovery & Filter Controls Toolbar -->
+        <section class="controls-section">
+            <div class="controls-container">
+                <div class="controls-left">
+                    <div class="results-meta" id="resultsMeta">
+                        <span class="meta-dot"></span>
+                        <span id="resultsQueryTitle">Curated Trending Visuals</span>
+                        <span class="meta-count" id="resultsCountBadge"></span>
+                    </div>
+                </div>
+
+                <div class="controls-right">
+                    <!-- Orientation Filter -->
+                    <div class="filter-group">
+                        <label for="orientationSelect" class="filter-label">
+                            <i class="fa-solid fa-sliders"></i> Orientation:
+                        </label>
+                        <select id="orientationSelect" class="filter-select">
+                            <option value="">All Orientations</option>
+                            <option value="landscape">Landscape</option>
+                            <option value="portrait">Portrait</option>
+                            <option value="squarish">Squarish</option>
+                        </select>
+                    </div>
+
+                    <!-- Sort Filter -->
+                    <div class="filter-group">
+                        <label for="sortSelect" class="filter-label">
+                            <i class="fa-solid fa-arrow-down-short-wide"></i> Sort:
+                        </label>
+                        <select id="sortSelect" class="filter-select">
+                            <option value="relevant">Relevant / Popular</option>
+                            <option value="latest">Latest</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section class="gallery-section">
+            <div class="gallery-container">
+                <!-- Masonry Flex Grid Container with Multi-Columns -->
+                <div class="masonry-grid" id="masonryGrid">
+                    <!-- Dynamic column elements will be initialized and cards appended evenly -->
+                </div>
+
+                <!-- Skeleton Loading Shimmer Grid -->
+                <div class="skeleton-grid" id="skeletonGrid" style="display: none;">
+                    <div class="skeleton-col">
+                        <div class="skeleton-card h-400"></div>
+                        <div class="skeleton-card h-320"></div>
+                    </div>
+                    <div class="skeleton-col">
+                        <div class="skeleton-card h-300"></div>
+                        <div class="skeleton-card h-420"></div>
+                    </div>
+                    <div class="skeleton-col">
+                        <div class="skeleton-card h-500"></div>
+                        <div class="skeleton-card h-350"></div>
+                    </div>
+                    <div class="skeleton-col">
+                        <div class="skeleton-card h-350"></div>
+                        <div class="skeleton-card h-450"></div>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div class="state-container" id="emptyState" style="display: none;">
+                    <div class="state-icon">
+                        <i class="fa-regular fa-images"></i>
+                    </div>
+                    <h3 class="state-title">No matching visuals found</h3>
+                    <p class="state-desc">Try refining your search terms or exploring popular categories below.</p>
+                    <div class="state-tags" id="suggestedTags">
+                        <button class="tag-pill" data-query="Cyberpunk Neon">Cyberpunk Neon</button>
+                        <button class="tag-pill" data-query="Deep Forest">Deep Forest</button>
+                        <button class="tag-pill" data-query="Dark Architecture">Dark Architecture</button>
+                        <button class="tag-pill" data-query="Abstract 4K">Abstract 4K</button>
+                    </div>
+                </div>
+
+                <!-- Error State -->
+                <div class="state-container" id="errorState" style="display: none;">
+                    <div class="state-icon error-icon">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <h3 class="state-title" id="errorMessage">Unable to fetch images</h3>
+                    <p class="state-desc" id="errorDescription">The Unsplash API might be rate-limited or there is a network issue. Please check your connection and try again.</p>
+                    <button class="btn-retry" id="retryBtn">
+                        <i class="fa-solid fa-rotate-right"></i> Try Again
+                    </button>
+                </div>
+
+                <!-- Load More Button -->
+                <div class="load-more-container" id="loadMoreContainer">
+                    <button class="btn-load-more" id="loadMoreBtn">
+                        <span class="btn-text">Load More Visuals</span>
+                        <i class="fa-solid fa-spinner fa-spin spinner" style="display: none;"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Lightbox / Photo Detail Modal -->
+    <div class="modal-backdrop" id="lightboxModal" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="modal-content">
+            <!-- Modal Header Actions -->
+            <div class="modal-header">
+                <div class="modal-author" id="modalAuthor">
+                    <img src="" alt="" class="modal-author-avatar" id="modalAuthorAvatar">
+                    <div class="modal-author-info">
+                        <span class="modal-author-name" id="modalAuthorName">Author Name</span>
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="modal-author-link" id="modalAuthorLink">
+                            <i class="fa-brands fa-unsplash"></i> <span id="modalAuthorUsername">@username</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="modal-action-btn" id="modalFavoriteBtn" title="Save to Favorites">
+                        <i class="fa-regular fa-heart"></i>
+                    </button>
+                    <button class="modal-action-btn" id="modalShareBtn" title="Copy Image Link">
+                        <i class="fa-solid fa-link"></i>
+                    </button>
+                    
+                    <!-- Download Dropdown -->
+                    <div class="download-dropdown-wrapper">
+                        <button class="btn-download-primary" id="modalDownloadMainBtn">
+                            <i class="fa-solid fa-download"></i>
+                            <span>Download</span>
+                        </button>
+                        <button class="btn-download-trigger" id="downloadToggleBtn" title="Select Download Size">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="download-menu" id="downloadMenu">
+                            <button class="download-menu-item" data-size="small">
+                                <span class="size-label">Small</span>
+                                <span class="size-desc">640px wide</span>
+                            </button>
+                            <button class="download-menu-item" data-size="regular">
+                                <span class="size-label">Regular (Recommended)</span>
+                                <span class="size-desc">1080px wide</span>
+                            </button>
+                            <button class="download-menu-item" data-size="full">
+                                <span class="size-label">Full HD / Original</span>
+                                <span class="size-desc" id="modalFullDimensions">Original</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="modal-close-btn" id="modalCloseBtn" title="Close (ESC)">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Body / Large Photo Display -->
+            <div class="modal-body">
+                <button class="nav-arrow nav-prev" id="modalPrevBtn" title="Previous (Left Arrow)">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                
+                <div class="modal-image-stage">
+                    <img src="" alt="Visual Fetch Full Preview" class="modal-image" id="modalImage">
+                </div>
+
+                <button class="nav-arrow nav-next" id="modalNextBtn" title="Next (Right Arrow)">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <!-- Modal Footer / Metadata & Tags -->
+            <div class="modal-footer">
+                <div class="modal-meta-stats">
+                    <div class="stat-item" id="modalLikesStat">
+                        <i class="fa-solid fa-heart"></i>
+                        <span id="modalLikesCount">0</span> likes
+                    </div>
+                    <div class="stat-item" id="modalDimensionsStat">
+                        <i class="fa-solid fa-expand"></i>
+                        <span id="modalDimensions">--</span>
+                    </div>
+                    <div class="stat-item" id="modalAltStat">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span id="modalAltText">No description</span>
+                    </div>
+                </div>
+
+                <div class="modal-tags" id="modalTagsContainer">
+                    <!-- Dynamic tag chips -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Favorites Slide-Out Drawer -->
+    <div class="drawer-backdrop" id="favoritesDrawerBackdrop"></div>
+    <aside class="drawer" id="favoritesDrawer" aria-hidden="true">
+        <div class="drawer-header">
+            <div class="drawer-title-group">
+                <i class="fa-solid fa-heart favorite-icon"></i>
+                <h2 class="drawer-title">My Saved Visuals</h2>
+                <span class="drawer-count-badge" id="drawerCount">0</span>
+            </div>
+            <button class="drawer-close-btn" id="closeFavoritesBtn" title="Close Drawer">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="drawer-body">
+            <div class="favorites-grid" id="favoritesGrid">
+                <!-- Bookmarked images will be rendered here -->
+            </div>
+
+            <div class="drawer-empty" id="drawerEmpty">
+                <div class="drawer-empty-icon">
+                    <i class="fa-regular fa-heart"></i>
+                </div>
+                <h3>No favorites saved yet</h3>
+                <p>Click the heart icon on any photo card to bookmark and collect your favorite visuals here.</p>
             </div>
         </div>
 
-        <div class="center">
-            <span class="btn btn-load" id="loadBtn">Show more</span>
+        <div class="drawer-footer" id="drawerFooter" style="display: none;">
+            <button class="btn-clear-favorites" id="openClearDialogBtn">
+                <i class="fa-regular fa-trash-can"></i> Clear All Saved
+            </button>
         </div>
-    </main>
-    <footer>
-        <div class="first_note">
-            <h2 class="center">Our Vision ~</h2>
-            <br>
-            <p>Visual Fetch is a image searching website where you will find high-quality images.
-                Our platform is created with the sole aim of offering a seamless and ad-free image search experience for personal and educational use.
-                Visual Fetch is designed exclusively for study purposes, utilizing the <a class="foot_link" href="https://unsplash.com/" target="_blank">Unsplash.com</a> API feature to provide an enriching visual experience without any commercial intentions.
-            </p>
+    </aside>
+
+    <!-- Custom Confirmation Dialog Modal -->
+    <div class="dialog-backdrop" id="confirmDialog" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="dialog-box">
+            <div class="dialog-icon-wrapper">
+                <i class="fa-solid fa-trash-can dialog-icon"></i>
+            </div>
+            <h3 class="dialog-title">Clear all saved visuals?</h3>
+            <p class="dialog-desc">This will permanently remove all bookmarked photos from your favorites collection.</p>
+            <div class="dialog-actions">
+                <button class="dialog-btn btn-cancel" id="dialogCancelBtn">Cancel</button>
+                <button class="dialog-btn btn-confirm-danger" id="dialogConfirmBtn">Yes, Clear All</button>
+            </div>
         </div>
-        <div class="center second_note">
-            <p class="pc">&copy; 2024 Visual Fetch | The Image Library | Created by - Shubham Dixit</p>
-            <p class="mobile">&copy; 2024 Visual Fetch | The Image Library <br> Created by - Shubham Dixit </p>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-top-btn" id="scrollTopBtn" title="Back to top" aria-label="Back to top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand-section">
+                <div class="footer-brand">
+                    <img src="logo.svg" alt="Visual Fetch Logo" class="footer-logo">
+                    <div class="footer-brand-name">Visual Fetch</div>
+                </div>
+                <p class="footer-desc">
+                    A sleek, modern image library crafted for students, designers, and visual researchers. Built with passion to provide an enriching and frictionless photo discovery experience.
+                </p>
+                <div class="footer-api-badge">
+                    <i class="fa-brands fa-unsplash"></i> Powered by Unsplash API
+                </div>
+            </div>
+
+            <div class="footer-links-section">
+                <div class="footer-col">
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="#" class="footer-tag-link" data-search="Nature Wallpapers">Nature Wallpapers</a></li>
+                        <li><a href="#" class="footer-tag-link" data-search="Minimalist Architecture">Architecture</a></li>
+                        <li><a href="#" class="footer-tag-link" data-search="Cyberpunk City">Cyberpunk Aesthetics</a></li>
+                        <li><a href="#" class="footer-tag-link" data-search="Cinematic Portraits">Cinematic Portraits</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Creator</h4>
+                    <p class="footer-about-text">
+                        Designed & Developed by <a href="https://shubhamdixit.netlify.app/" target="_blank" rel="noopener noreferrer" class="portfolio-highlight-link">Shubham Dixit</a>. Connect via portfolio for creative projects and collaborations.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="footer-bottom-container">
+                <p>&copy; <span id="currentYear">2026</span> Visual Fetch | The Image Library</p>
+                <p class="footer-credit">
+                    Crafted with <i class="fa-solid fa-heart text-accent"></i> by 
+                    <a href="https://shubhamdixit.netlify.app/" target="_blank" rel="noopener noreferrer" class="portfolio-author-link">Shubham Dixit</a>
+                </p>
+            </div>
         </div>
     </footer>
-    
+
+    <!-- JavaScript Application -->
     <script src="script.js"></script>
 </body>
 </html>
