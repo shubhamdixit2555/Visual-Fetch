@@ -94,6 +94,7 @@ const drawerCount = document.getElementById("drawerCount");
 const favoritesGrid = document.getElementById("favoritesGrid");
 const drawerEmpty = document.getElementById("drawerEmpty");
 const drawerFooter = document.getElementById("drawerFooter");
+const downloadAllFavoritesBtn = document.getElementById("downloadAllFavoritesBtn");
 const openClearDialogBtn = document.getElementById("openClearDialogBtn");
 
 // Custom Confirmation Dialog References
@@ -159,24 +160,28 @@ function setupEventListeners() {
       searchInput.select();
     }
 
-    if (lightboxModal.classList.contains("active")) {
+    if (confirmDialog.classList.contains("active")) {
+      if (e.key === "Escape") closeConfirmDialog();
+    } else if (lightboxModal.classList.contains("active")) {
       if (e.key === "Escape") closeLightbox();
       if (e.key === "ArrowLeft") navigateLightbox(-1);
       if (e.key === "ArrowRight") navigateLightbox(1);
-    }
-
-    if (confirmDialog.classList.contains("active") && e.key === "Escape") {
-      closeConfirmDialog();
+    } else if (favoritesDrawer.classList.contains("active")) {
+      if (e.key === "Escape") closeFavoritesDrawer();
     }
   });
 
   // Mobile / Browser Hardware Back Button Handling
-  window.addEventListener("popstate", () => {
-    if (confirmDialog.classList.contains("active")) {
+  window.addEventListener("popstate", (e) => {
+    const targetModal = e.state ? e.state.modal : null;
+
+    if (confirmDialog.classList.contains("active") && targetModal !== "confirm") {
       closeConfirmDialog(true);
-    } else if (lightboxModal.classList.contains("active")) {
+    }
+    if (lightboxModal.classList.contains("active") && targetModal !== "lightbox") {
       closeLightbox(true);
-    } else if (favoritesDrawer.classList.contains("active")) {
+    }
+    if (favoritesDrawer.classList.contains("active") && targetModal !== "favorites" && targetModal !== "lightbox" && targetModal !== "confirm") {
       closeFavoritesDrawer(true);
     }
   });
@@ -276,9 +281,15 @@ function setupEventListeners() {
   });
 
   // Lightbox Modal Controls
-  modalCloseBtn.addEventListener("click", closeLightbox);
+  modalCloseBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    closeLightbox();
+  });
   lightboxModal.addEventListener("click", (e) => {
-    if (e.target === lightboxModal) closeLightbox();
+    if (e.target === lightboxModal) {
+      e.stopPropagation();
+      closeLightbox();
+    }
   });
 
   modalPrevBtn.addEventListener("click", (e) => {
@@ -337,8 +348,19 @@ function setupEventListeners() {
 
   // Favorites Drawer Controls
   openFavoritesBtn.addEventListener("click", openFavoritesDrawer);
-  closeFavoritesBtn.addEventListener("click", closeFavoritesDrawer);
-  favoritesDrawerBackdrop.addEventListener("click", closeFavoritesDrawer);
+  closeFavoritesBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    closeFavoritesDrawer();
+  });
+  favoritesDrawerBackdrop.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (!lightboxModal.classList.contains("active")) {
+      closeFavoritesDrawer();
+    }
+  });
+  if (downloadAllFavoritesBtn) {
+    downloadAllFavoritesBtn.addEventListener("click", downloadAllFavorites);
+  }
 
   // Custom Clear All Dialog
   openClearDialogBtn.addEventListener("click", () => {
@@ -782,26 +804,29 @@ function openLightbox(index) {
   state.currentModalIndex = index;
   const photo = state.photos[index];
 
-  modalAuthorAvatar.src = photo.user.avatar;
-  modalAuthorName.textContent = photo.user.name;
-  modalAuthorUsername.textContent = `@${photo.user.username}`;
-  modalAuthorLink.href = `${photo.user.profileUrl}?utm_source=visual_fetch&utm_medium=referral`;
+  modalAuthorAvatar.src = photo.user?.avatar || "";
+  modalAuthorAvatar.style.display = photo.user?.avatar ? "block" : "none";
+  modalAuthorName.textContent = photo.user?.name || "Photographer";
+  modalAuthorUsername.textContent = photo.user?.username ? `@${photo.user.username}` : "";
+  modalAuthorLink.href = photo.user?.profileUrl ? `${photo.user.profileUrl}?utm_source=visual_fetch&utm_medium=referral` : "#";
 
-  modalImage.src = photo.urls.regular;
-  modalImage.alt = photo.alt;
+  modalImage.src = photo.urls?.regular || photo.urls?.small || "";
+  modalImage.alt = photo.alt || "Visual Photo";
 
   // Preload full resolution image
-  const fullImg = new Image();
-  fullImg.src = photo.urls.full;
-  fullImg.onload = () => {
-    if (state.currentModalIndex === index) {
-      modalImage.src = photo.urls.full;
-    }
-  };
+  if (photo.urls?.full) {
+    const fullImg = new Image();
+    fullImg.src = photo.urls.full;
+    fullImg.onload = () => {
+      if (state.currentModalIndex === index) {
+        modalImage.src = photo.urls.full;
+      }
+    };
+  }
 
-  modalLikesCount.textContent = photo.likes.toLocaleString();
-  modalDimensions.textContent = `${photo.width} × ${photo.height}`;
-  modalFullDimensions.textContent = `${photo.width} × ${photo.height} (HD)`;
+  modalLikesCount.textContent = (photo.likes || 0).toLocaleString();
+  modalDimensions.textContent = photo.width && photo.height ? `${photo.width} × ${photo.height}` : "HD Visual";
+  modalFullDimensions.textContent = photo.width && photo.height ? `${photo.width} × ${photo.height} (HD)` : "High Resolution";
   modalAltText.textContent = photo.description || photo.alt || "No description provided";
 
   // Tags
@@ -844,7 +869,10 @@ function closeLightbox(isFromPopState = false) {
   lightboxModal.classList.remove("active");
   lightboxModal.setAttribute("aria-hidden", "true");
   downloadMenu.classList.remove("active");
-  document.body.style.overflow = "";
+
+  if (!favoritesDrawer.classList.contains("active")) {
+    document.body.style.overflow = "";
+  }
 
   if (!isFromPopState && history.state && history.state.modal === "lightbox") {
     try {
@@ -880,14 +908,14 @@ function downloadActiveImage(size = "regular") {
 }
 
 function downloadImageDirect(photo, size = "regular") {
-  let downloadUrl = photo.urls.regular;
-  if (size === "small") downloadUrl = photo.urls.small;
-  if (size === "full") downloadUrl = photo.urls.full || photo.links.download;
+  let downloadUrl = photo.urls?.regular || photo.urls?.small;
+  if (size === "small") downloadUrl = photo.urls?.small || photo.urls?.regular;
+  if (size === "full") downloadUrl = photo.urls?.full || (photo.links && photo.links.download) || photo.urls?.regular;
 
   showToast("Starting download...", "info");
 
   // Track download with Unsplash API
-  if (photo.links.downloadLocation) {
+  if (photo.links && photo.links.downloadLocation) {
     fetch(`${photo.links.downloadLocation}&client_id=${getApiKey()}`).catch(() => {});
   }
 
@@ -943,19 +971,42 @@ function toggleFavorite(photo) {
   } else {
     state.favorites.unshift({
       id: photo.id,
-      alt: photo.alt,
-      urls: photo.urls,
-      user: photo.user,
-      likes: photo.likes,
-      width: photo.width,
-      height: photo.height,
-      color: photo.color,
-      links: photo.links
+      alt: photo.alt || "Visual Photo",
+      description: photo.description || photo.alt || "",
+      urls: {
+        raw: photo.urls?.raw || photo.urls?.full || photo.urls?.regular,
+        full: photo.urls?.full || photo.urls?.regular,
+        regular: photo.urls?.regular || photo.urls?.small,
+        small: photo.urls?.small || photo.urls?.regular,
+        thumb: photo.urls?.thumb || photo.urls?.small
+      },
+      user: {
+        name: photo.user?.name || "Photographer",
+        username: photo.user?.username || "photographer",
+        avatar: photo.user?.avatar || "",
+        profileUrl: photo.user?.profileUrl || "#"
+      },
+      likes: photo.likes || 0,
+      width: photo.width || 1920,
+      height: photo.height || 1080,
+      color: photo.color || "#111827",
+      tags: photo.tags || [],
+      links: {
+        html: photo.links?.html || "#",
+        download: photo.links?.download || photo.urls?.full || photo.urls?.regular,
+        downloadLocation: photo.links?.downloadLocation || ""
+      }
     });
     showToast("Saved to favorites!", "heart");
   }
   saveFavorites();
   updateCardFavoriteButtons();
+  if (state.currentModalIndex >= 0 && state.photos[state.currentModalIndex]?.id === photo.id) {
+    updateModalFavoriteState(photo.id);
+  }
+  if (favoritesDrawer && favoritesDrawer.classList.contains("active")) {
+    renderFavorites();
+  }
 }
 
 function updateFavoritesCount() {
@@ -999,12 +1050,87 @@ function closeFavoritesDrawer(isFromPopState = false) {
   favoritesDrawer.classList.remove("active");
   favoritesDrawerBackdrop.classList.remove("active");
   favoritesDrawer.setAttribute("aria-hidden", "true");
-  document.body.style.overflow = "";
+
+  if (!lightboxModal.classList.contains("active")) {
+    document.body.style.overflow = "";
+  }
 
   if (!isFromPopState && history.state && history.state.modal === "favorites") {
     try {
       history.back();
     } catch (e) {}
+  }
+}
+
+let isDownloadingAll = false;
+
+async function downloadAllFavorites() {
+  if (isDownloadingAll) return;
+  if (!state.favorites || state.favorites.length === 0) {
+    showToast("No saved visuals to download", "info");
+    return;
+  }
+
+  const total = state.favorites.length;
+  isDownloadingAll = true;
+  const originalHtml = `<i class="fa-solid fa-cloud-arrow-down"></i> Download All (${total})`;
+  if (downloadAllFavoritesBtn) {
+    downloadAllFavoritesBtn.disabled = true;
+    downloadAllFavoritesBtn.classList.add("loading");
+  }
+
+  showToast(`Preparing download for ${total} visual${total > 1 ? "s" : ""}...`, "info");
+
+  let successCount = 0;
+
+  for (let i = 0; i < state.favorites.length; i++) {
+    const photo = state.favorites[i];
+    if (downloadAllFavoritesBtn) {
+      downloadAllFavoritesBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Downloading (${i + 1}/${total})`;
+    }
+
+    try {
+      if (photo.links && photo.links.downloadLocation) {
+        fetch(`${photo.links.downloadLocation}&client_id=${getApiKey()}`).catch(() => {});
+      }
+
+      const downloadUrl = photo.urls?.full || photo.urls?.regular || photo.urls?.small;
+      const res = await fetch(downloadUrl);
+      const blob = await res.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.style.display = "none";
+      a.href = blobUrl;
+      a.download = `visual-fetch-${photo.id}.jpg`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(blobUrl);
+      document.body.removeChild(a);
+      successCount++;
+    } catch (err) {
+      console.warn("Direct blob download failed, trying new tab fallback:", photo.id, err);
+      try {
+        window.open(photo.urls?.regular || photo.urls?.small, "_blank");
+        successCount++;
+      } catch (e) {}
+    }
+
+    if (i < total - 1) {
+      await new Promise(resolve => setTimeout(resolve, 350));
+    }
+  }
+
+  isDownloadingAll = false;
+  if (downloadAllFavoritesBtn) {
+    downloadAllFavoritesBtn.disabled = false;
+    downloadAllFavoritesBtn.classList.remove("loading");
+    downloadAllFavoritesBtn.innerHTML = `<i class="fa-solid fa-cloud-arrow-down"></i> Download All (${state.favorites.length})`;
+  }
+
+  if (successCount === total) {
+    showToast(`Successfully downloaded all ${total} visual${total > 1 ? "s" : ""}!`, "success");
+  } else {
+    showToast(`Downloaded ${successCount} of ${total} visuals`, "info");
   }
 }
 
@@ -1020,30 +1146,88 @@ function renderFavorites() {
   drawerEmpty.style.display = "none";
   drawerFooter.style.display = "block";
 
+  if (downloadAllFavoritesBtn && !isDownloadingAll) {
+    downloadAllFavoritesBtn.innerHTML = `<i class="fa-solid fa-cloud-arrow-down"></i> Download All (${state.favorites.length})`;
+  }
+
   state.favorites.forEach((photo) => {
     const card = document.createElement("div");
     card.className = "fav-card";
+    card.setAttribute("tabindex", "0");
+    card.setAttribute("role", "button");
+    card.setAttribute("aria-label", `View photo by ${photo.user?.name || "Photographer"}`);
+
     card.innerHTML = `
-      <img src="${photo.urls.small}" alt="${escapeHtml(photo.alt)}" class="fav-img" loading="lazy">
-      <button class="fav-remove-btn" title="Remove from favorites">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
+      <div class="fav-img-wrapper" style="background-color: ${photo.color || "#111827"}">
+        <img 
+          src="${photo.urls?.small || photo.urls?.regular}" 
+          alt="${escapeHtml(photo.alt || "Saved visual")}" 
+          class="fav-img" 
+          loading="lazy"
+        >
+        <div class="fav-overlay">
+          <div class="fav-overlay-top">
+            <button 
+              class="fav-action-btn fav-remove-btn" 
+              data-action="remove" 
+              title="Remove from favorites"
+              aria-label="Remove from favorites"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <div class="fav-overlay-bottom">
+            <div class="fav-author-info" title="Photo by ${escapeHtml(photo.user?.name || "Photographer")}">
+              <i class="fa-regular fa-user"></i>
+              <span class="fav-author-name">${escapeHtml(photo.user?.name || "Photographer")}</span>
+            </div>
+            <button 
+              class="fav-action-btn fav-download-btn" 
+              data-action="download" 
+              title="Download image"
+              aria-label="Download image"
+            >
+              <i class="fa-solid fa-arrow-down"></i>
+            </button>
+          </div>
+        </div>
+      </div>
     `;
 
-    card.querySelector(".fav-remove-btn").addEventListener("click", (e) => {
-      e.stopPropagation();
-      toggleFavorite(photo);
-      renderFavorites();
+    // Handle clicks
+    card.addEventListener("click", (e) => {
+      const actionBtn = e.target.closest("[data-action]");
+      if (actionBtn) {
+        const action = actionBtn.dataset.action;
+        if (action === "remove") {
+          e.stopPropagation();
+          toggleFavorite(photo);
+          renderFavorites();
+        } else if (action === "download") {
+          e.stopPropagation();
+          downloadImageDirect(photo, "regular");
+        }
+      } else {
+        // Open Lightbox preview for this photo (panel remains open underneath)
+        let idx = state.photos.findIndex(p => p.id === photo.id);
+        if (idx < 0) {
+          state.photos.unshift(photo);
+          idx = 0;
+        }
+        openLightbox(idx);
+      }
     });
 
-    card.addEventListener("click", () => {
-      let idx = state.photos.findIndex(p => p.id === photo.id);
-      if (idx < 0) {
-        state.photos.unshift(photo);
-        idx = 0;
+    // Keyboard support (Enter key)
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.target.closest("[data-action]")) {
+        let idx = state.photos.findIndex(p => p.id === photo.id);
+        if (idx < 0) {
+          state.photos.unshift(photo);
+          idx = 0;
+        }
+        openLightbox(idx);
       }
-      closeFavoritesDrawer();
-      openLightbox(idx);
     });
 
     favoritesGrid.appendChild(card);

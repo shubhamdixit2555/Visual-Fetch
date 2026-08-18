@@ -26,7 +26,7 @@
 - 🧱 **Stable Multi-Column Masonry Grid**: Dynamic responsive gallery that preserves photo aspect ratios with zero layout shifts on pagination.
 - 🪟 **HD Lightbox Modal**: Fullscreen image preview with author credits, stats, dimensions, and tags.
 - ⬇️ **Multi-Resolution Downloads**: Download photos directly in **Small (640px)**, **Regular (1080px)**, or **Full HD / Original**.
-- ❤️ **Saved Favorites Collection**: Bookmark favorite visuals with `localStorage` persistence and a slide-out drawer manager.
+- ❤️ **Saved Favorites Collection & Manager**: Bookmark favorite visuals with `localStorage` persistence, full lightbox preview from drawer, individual quick downloads/removal, and a 1-click **Download All** batch saver.
 - 🧭 **Orientation & Sort Filters**: Filter by **Landscape**, **Portrait**, or **Squarish**, and sort by **Popular/Relevant** or **Latest**.
 - 🏷️ **Quick Discovery Tags**: One-click curated category chips (*Trending, Nature, Architecture, Wallpapers, Minimalist, Cyberpunk, 3D, Travel*).
 - 🔀 **Random Inspiration Shuffle**: Spontaneous discovery mode for finding fresh photographic inspirations.
